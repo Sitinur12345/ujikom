@@ -1,0 +1,16 @@
+# Placeholder untuk Foto Staff
+
+Silakan ganti file ini dengan foto asli staff dan guru:
+
+1. kepala-sekolah.jpg - Drs. H. Ahmad Suryadi, M.Pd
+2. wakil-kepala.jpg - Siti Nurhaliza, S.Pd  
+3. guru-pplg.jpg - Budi Santoso, S.Kom
+4. guru-tjkt.jpg - Ahmad Fauzi, S.T
+5. guru-to.jpg - Rudi Hartono, S.Pd
+6. guru-tpfl.jpg - Eko Prasetyo, S.T
+7. staff-tu.jpg - Sari Indah, S.E
+8. pustakawan.jpg - Dewi Sartika, S.Pd
+
+Format: JPG atau PNG
+Ukuran: Minimal 300x300 pixels
+Rasio: 1:1 (persegi)
