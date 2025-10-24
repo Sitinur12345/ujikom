@@ -376,9 +376,18 @@
                         @endif
                         <div class="d-flex align-items-center gap-2" style="margin-top:10px;">
                             @auth
-                                <button class="btn btn-sm btn-outline-secondary" onclick="openCommentModal({{ $item->post->id }})">
-                                    <i class="far fa-comment"></i> Komentar
-                                </button>
+                                @php
+                                    $isLiked = $item->post && $item->post->likes->contains('id', auth()->id());
+                                    $likesCount = $item->post ? $item->post->likes->count() : 0;
+                                @endphp
+                                <form action="{{ route('gallery.like', $item->post->id) }}" method="POST" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm {{ $isLiked ? 'btn-danger' : 'btn-outline-danger' }}" 
+                                            style="transition: all 0.3s ease;">
+                                        <i class="{{ $isLiked ? 'fas' : 'far' }} fa-heart"></i> 
+                                        {{ $isLiked ? 'Liked' : 'Like' }} ({{ $likesCount }})
+                                    </button>
+                                </form>
                                 @if($item->fotos->first())
                                     <a href="{{ route('gallery.download', $item->fotos->first()->id) }}" 
                                        class="btn btn-sm btn-outline-success"
@@ -387,8 +396,8 @@
                                     </a>
                                 @endif
                             @else
-                                <a class="btn btn-sm btn-outline-warning" href="{{ route('login') }}" title="Login untuk mengunduh">
-                                    <i class="fas fa-sign-in-alt"></i> Login untuk Download
+                                <a class="btn btn-sm btn-outline-warning" href="{{ route('login') }}" title="Login untuk like dan download">
+                                    <i class="fas fa-sign-in-alt"></i> Login untuk Like & Download
                                 </a>
                             @endauth
                         </div>
@@ -441,32 +450,6 @@
         </div>
     </div>
 
-    <!-- Comment Modal -->
-    <div id="commentModal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h2 class="modal-title">Tambah Komentar</h2>
-                <span class="close" onclick="closeModal('commentModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                @auth
-                <form id="commentForm" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label class="form-label">Komentar</label>
-                        <textarea class="form-input form-textarea" name="comment" placeholder="Tulis komentar..." required maxlength="500"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="closeModal('commentModal')">Batal</button>
-                        <button type="submit" class="btn btn-primary">Kirim</button>
-                    </div>
-                </form>
-                @else
-                <p>Silakan <a href="{{ route('login') }}">login</a> untuk memberi komentar.</p>
-                @endauth
-            </div>
-        </div>
-    </div>
 @endsection
 
 @section('scripts')
@@ -512,14 +495,6 @@
             document.getElementById('imageModal').style.display = 'block';
         }
 
-        function openCommentModal(postId) {
-            const form = document.getElementById('commentForm');
-            if (form) {
-                form.action = `{{ url('/gallery') }}/${postId}/comment`;
-            }
-            document.getElementById('commentModal').style.display = 'block';
-        }
-        
         function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
         
         // Close modal when clicking outside

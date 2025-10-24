@@ -17,7 +17,7 @@ Route::get('/', function () {
 })->name('user.dashboard');
 
 Route::get('/user/gallery', function () {
-    $galeri = \App\Models\galery::with(['post.kategori', 'fotos'])->where('status', 'aktif')->get();
+    $galeri = \App\Models\galery::with(['post.kategori', 'post.likes', 'fotos'])->where('status', 'aktif')->get();
     $kategoris = \App\Models\Kategori::orderBy('judul', 'asc')->get();
     return view('user.gallery', compact('galeri', 'kategoris'));
 })->name('user.gallery');
@@ -26,6 +26,7 @@ Route::get('/user/gallery', function () {
 use App\Http\Controllers\GalleryInteractionController;
 Route::middleware(['auth'])->group(function () {
     Route::post('/gallery/{post}/comment', [GalleryInteractionController::class, 'comment'])->name('gallery.comment');
+    Route::post('/gallery/{post}/like', [GalleryInteractionController::class, 'like'])->name('gallery.like');
     Route::get('/gallery/photo/{foto}/download', [GalleryInteractionController::class, 'download'])->name('gallery.download');
 });
 

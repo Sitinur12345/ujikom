@@ -21,6 +21,34 @@ class GalleryInteractionController extends Controller
         return back()->with('status', 'commented');
     }
 
+    public function like(\App\Models\posts $post)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('login')->with('error', 'Anda harus login untuk menyukai foto.');
+        }
+
+        $user = Auth::user();
+        
+        // Cek apakah user sudah like
+        if ($post->likes()->where('user_id', $user->id)->exists()) {
+            // Unlike - hapus like
+            $post->likes()->detach($user->id);
+            $liked = false;
+        } else {
+            // Like - tambahkan like
+            $post->likes()->attach($user->id);
+            $liked = true;
+        }
+
+        // Hitung total likes
+        $likesCount = $post->likes()->count();
+
+        return back()->with([
+            'status' => $liked ? 'liked' : 'unliked',
+            'likes_count' => $likesCount
+        ]);
+    }
+
     public function download(\App\Models\foto $foto)
     {
         // Pastikan user sudah login
